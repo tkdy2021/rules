@@ -28,6 +28,7 @@ jobs:
           rsync -a --delete \
             --exclude='.git' \
             --exclude='.github' \
+            --exclude='source-meta' \
             source-meta/ ./
 
       - name: Cleanup
