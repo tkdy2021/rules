@@ -1,0 +1,41 @@
+name: Build Loon Rule
+
+on:
+  schedule:
+    - cron: '50 2 * * *'
+  workflow_dispatch: 
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Rule Repository
+        uses: actions/checkout@v7
+        path: meta
+        with:
+          repository: MetaCubeX/meta-rules-dat
+          ref: meta
+          fetch-depth: 1
+
+      - name: build
+        working-directory: meta
+        run: bash $GITHUB_WORKSPACE/.github/build.sh
+
+      - name: Commit and push
+          working-directory: meta
+          run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            
+            git checkout -B loon
+
+            git add -A
+            if git diff --cached --quiet; then
+              exit 0
+            fi
+            git commit -m "chore: auto update rules $(date -u '+%Y-%m-%d %H:%M') UTC"
+            git push origin HEAD:loon --force
+    
