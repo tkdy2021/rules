@@ -22,7 +22,7 @@ jobs:
 
       - name: build
         working-directory: meta
-        run: bash .github/build.sh
+        run: bash $GITHUB_WORKSPACE/.github/build.sh
 
       - name: Commit and push
         working-directory: meta
